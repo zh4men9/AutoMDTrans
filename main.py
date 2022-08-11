@@ -74,7 +74,7 @@ def get_args(): #获取相关参数
 
 def check(args):
   args.file_path = args.file_path.strip()
-  print(f"path:{args.file_path}")
+  print(f"当前文档路径:{args.file_path}")
   if (args.file_path=='None'): # 检查是否输入文档
     msb.showerror('Error', '请输入文件路径')
     return
@@ -94,10 +94,10 @@ def strip_path(pic_path): # 剥离出图片的路径
     pass # todo
   elif (pic_path[0]=='!' and pic_path[-1]==']'): # ![[]]
     pic_path = pic_path[3:-2]
-    print(pic_path)
+    # print(pic_path)
   elif (pic_path[0]=='!' and pic_path[-1]==')'): # ![]()
     pic_path = pic_path[4:-1]
-    print(pic_path)
+    # print(pic_path)
     
   return pic_path
 
@@ -115,11 +115,13 @@ def upload(args, pic_path_total): # 遍历每一张图片，上传到图床，�
   if ('\\' in args.file_path):
     pos = args.file_path.rfind('\\')
     file_dir = args.file_path[:pos+1]
-    print(f'file_dir:{file_dir}')
+    write_file_path = file_dir + '\\' + 'tmp.md'
+    print(f'文档所在目录:{file_dir}')
   elif ('/' in args.file_path):
     pos = args.file_path.rfind('/')
     file_dir = args.file_path[:pos+1]
-    print(f'file_dir:{file_dir}')
+    write_file_path = file_dir + '/' + 'tmp.md'
+    print(f'文档所在目录:{file_dir}')
   
   # 遍历每张图片上传
   new_file_path = args.file_path + '.tmp'
@@ -128,7 +130,7 @@ def upload(args, pic_path_total): # 遍历每一张图片，上传到图床，�
     
     for pic_path in pic_path_total:
       pure_pic_path = file_dir + strip_path(pic_path.strip())
-      print(f'pic_path:{pure_pic_path}')
+      print(f'正在上传图片:{pure_pic_path}')
       if (os.path.exists(pure_pic_path) == True):    
         # 将图片放入剪切板内存
         paste_img(pure_pic_path)
@@ -144,15 +146,19 @@ def upload(args, pic_path_total): # 遍历每一张图片，上传到图床，�
           try:
               if tmp_value != recent_value:				 #如果检测到剪切板内容有改动，那么就进入文本的修改
                   recent_value = tmp_value
-                  print(recent_value)
+                  print(f'上传成功:{recent_value}')
                   # 读取剪切板链接，替换掉原文档对应内容
                   time.sleep(0.1)
                   data = data.replace(pic_path, recent_value)
                   break
           except KeyboardInterrupt:  # 如果有ctrl+c，那么就退出这个程序。  （不过好像并没有用。无伤大雅）
               break
-  print(data)
+  # print(data)
   mdfile.close()
+  write_file = open(write_file_path,'w',encoding='utf-8')
+  write_file.write(data)
+  write_file.close()
+  
   msb.showinfo('Success!', '转换成功！')
 
 def trans(args):
@@ -170,7 +176,7 @@ def trans(args):
   pic_path_total = []
   with open(new_file_path,'r',encoding='utf-8') as mdfile:
     data = mdfile.read()
-    print(data)
+    # print(data)
   mdfile.close()
   
   re_pattern = ['!\[.*\]\(.*\)','!\[\[.*\]\]','<.* src=[\'\"].*[\'\"] .*>'] # ![]()形式，![[]]形式，<img src=''>形式
@@ -181,7 +187,7 @@ def trans(args):
     # print(pic_path)
     if (0 != len(pic_path)):
       pic_path_total = pic_path_total + pic_path
-  print(f'pic_path_total:{pic_path_total}')
+  # print(f'pic_path_total:{pic_path_total}')
   
   upload(args, pic_path_total)
   
