@@ -6,4 +6,4 @@ Auto MarkDown Transformation
 
 # 项目流程图
 
-![1660181862126](image/README/1660181862126.png)
+![img](img/flow.png)
