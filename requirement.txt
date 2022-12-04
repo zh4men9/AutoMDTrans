@@ -1,4 +1,6 @@
-pykeyboard
+pillow
+pyHook-1.5.1-cp36-cp36m-win_amd64.whl
 pywin32 
 PyUserInput 
+pykeyboard
 pyperclip

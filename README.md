@@ -15,7 +15,34 @@ Auto MarkDown Transformation
   ```
   pip install -r requirement.txt
   ```
-- 使用命令
+
+现在运行会出现如下错误：
+
+```bash
+ImportError: cannot import name 'PyKeyboard' from 'pykeyboard'
+```
+
+找到pykeyboard的安装路径，将`__init__.py`文件替换为如下内容：
+
+```bash
+import sys
+ 
+if sys.platform.startswith('java'):
+    from .java_ import PyKeyboard
+ 
+elif sys.platform == 'darwin':
+    from .mac import PyKeyboard, PyKeyboardEvent
+ 
+elif sys.platform == 'win32':
+    from .windows import PyKeyboard, PyKeyboardEvent
+ 
+else:
+    from .x11 import PyKeyboard, PyKeyboardEvent
+```
+
+此错误更详细介绍见这篇博客：[安装pykeyboard模块 ](https://www.cnblogs.com/Anec/p/14644939.html)
+
+- 使用
   ```
   python main.py --file_path "your_markdown_path"
   ```
