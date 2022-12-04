@@ -96,7 +96,9 @@ def strip_path(pic_path): # 剥离出图片的路径
     pic_path = pic_path[3:-2]
     # print(pic_path)
   elif (pic_path[0]=='!' and pic_path[-1]==')'): # ![]()
-    pic_path = pic_path[4:-1]
+    last_left_br = pic_path.rfind('(')
+
+    pic_path = pic_path[last_left_br+1:-1]
     # print(pic_path)
     
   return pic_path
@@ -137,7 +139,7 @@ def upload(args, pic_path_total): # 遍历每一张图片，上传到图床，�
         
         # 激活PicGo快捷键让其上传剪切板图片
         upload_image_via_picgo()
-        
+        time.sleep(1)
         # 监听是否收到剪切板改变，并判断是否是图床的链接
         recent_value = pyperclip.paste() 			# 读取剪切板复制的内容
         while True:
@@ -148,7 +150,7 @@ def upload(args, pic_path_total): # 遍历每一张图片，上传到图床，�
                   recent_value = tmp_value
                   print(f'上传成功:{recent_value}')
                   # 读取剪切板链接，替换掉原文档对应内容
-                  time.sleep(0.1)
+                  # time.sleep(0.5)
                   data = data.replace(pic_path, recent_value)
                   break
           except KeyboardInterrupt:  # 如果有ctrl+c，那么就退出这个程序。  （不过好像并没有用。无伤大雅）
